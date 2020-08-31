@@ -14,4 +14,11 @@ package Circular_Buffers_Tests is
    -- Test Routines:
    procedure Test_Basic_Read_Write (T : in out Test_Cases.Test_Case'Class);
 
+   procedure Test_Overwriting (T : in out Test_Cases.Test_Case'Class);
+
+   procedure Test_Reader_Matches_Writer
+     (T : in out Test_Cases.Test_Case'Class);
+
+   procedure Test_Read_Pre_Condition (T : in out Test_Cases.Test_Case'Class);
+
 end Circular_Buffers_Tests;

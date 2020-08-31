@@ -3,15 +3,20 @@ generic
    Max_Size : Positive;
 package Circular_Buffers is
 
+   pragma Assertion_Policy (Check);
+
    type Circular_Buffer is private;
 
    function Read (C : Circular_Buffer) return T;
 
    procedure Write (C : in out Circular_Buffer; Item : T);
 
-   procedure Next_Read (C : in out Circular_Buffer);
+   procedure Next_Read (C : in out Circular_Buffer)
+     with Pre => not Reader_Matches_Writer (C);
 
    procedure Next_Write (C : in out Circular_Buffer);
+
+   function Reader_Matches_Writer (C : Circular_Buffer) return Boolean;
 
 private
 

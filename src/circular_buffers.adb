@@ -1,4 +1,3 @@
-pragma Ada_2012;
 package body Circular_Buffers is
 
    type Idx_Type is (Read, Write);
@@ -7,19 +6,21 @@ package body Circular_Buffers is
    begin
       case I is
          when Read =>
-            if C.Read_Idx = C.Buffer'Last then
-               C.Read_Idx := Min_Size;
-            else
                C.Read_Idx := C.Read_Idx + 1;
-            end if;
          when Write =>
-            if C.Write_Idx = C.Buffer'Last then
-               C.Write_Idx := Min_Size;
-            else
                C.Write_Idx := C.Write_Idx + 1;
-            end if;
       end case;
    end Increment_Idx;
+
+   function Wrap_Around(C : Circular_Buffer; Idx : Positive) return Positive is
+      Remainder : constant Natural := Idx rem C.Buffer'Last;
+   begin
+      if Remainder = 0 then
+         return Positive (C.Buffer'Last);
+      else
+         return Positive (Remainder);
+      end if;
+   end Wrap_Around;
 
    ----------
    -- Read --
@@ -27,7 +28,7 @@ package body Circular_Buffers is
 
    function Read (C : Circular_Buffer) return T is
    begin
-      return C.Buffer (C.Read_Idx);
+      return C.Buffer (Wrap_Around(C, C.Read_Idx));
    end Read;
 
    -----------
@@ -36,7 +37,7 @@ package body Circular_Buffers is
 
    procedure Write (C : in out Circular_Buffer; Item : T) is
    begin
-      C.Buffer (C.Write_Idx) := Item;
+      C.Buffer (Wrap_Around(C, C.Write_Idx)) := Item;
    end Write;
 
    procedure Next_Read (C : in out Circular_Buffer) is
@@ -48,5 +49,10 @@ package body Circular_Buffers is
    begin
       Increment_Idx (C, Write);
    end Next_Write;
+
+   function Reader_Matches_Writer (C : Circular_Buffer) return Boolean is
+   begin
+      return C.Read_Idx = C.Write_Idx;
+   end Reader_Matches_Writer;
 
 end Circular_Buffers;
