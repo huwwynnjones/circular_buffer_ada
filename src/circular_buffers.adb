@@ -2,21 +2,21 @@ package body Circular_Buffers is
 
    type Idx_Type is (Read, Write);
 
-   procedure Increment_Idx (C : in out Circular_Buffer; I : Idx_Type) is
+   procedure Increment_Idx (CB : in out Circular_Buffer; I : Idx_Type) is
    begin
       case I is
          when Read =>
-               C.Read_Idx := C.Read_Idx + 1;
+               CB.Read_Idx := CB.Read_Idx + 1;
          when Write =>
-               C.Write_Idx := C.Write_Idx + 1;
+               CB.Write_Idx := CB.Write_Idx + 1;
       end case;
    end Increment_Idx;
 
-   function Wrap_Around(C : Circular_Buffer; Idx : Positive) return Positive is
-      Remainder : constant Natural := Idx rem C.Buffer'Last;
+   function Wrap_Around(CB : Circular_Buffer; Idx : Positive) return Positive is
+      Remainder : constant Natural := Idx rem CB.Buffer'Last;
    begin
       if Remainder = 0 then
-         return Positive (C.Buffer'Last);
+         return Positive (CB.Buffer'Last);
       else
          return Positive (Remainder);
       end if;
@@ -26,33 +26,33 @@ package body Circular_Buffers is
    -- Read --
    ----------
 
-   function Read (C : Circular_Buffer) return T is
+   function Read (CB : Circular_Buffer) return T is
    begin
-      return C.Buffer (Wrap_Around(C, C.Read_Idx));
+      return CB.Buffer (Wrap_Around(CB, CB.Read_Idx));
    end Read;
 
    -----------
    -- Write --
    -----------
 
-   procedure Write (C : in out Circular_Buffer; Item : T) is
+   procedure Write (CB : in out Circular_Buffer; Item : T) is
    begin
-      C.Buffer (Wrap_Around(C, C.Write_Idx)) := Item;
+      CB.Buffer (Wrap_Around(CB, CB.Write_Idx)) := Item;
    end Write;
 
-   procedure Next_Read (C : in out Circular_Buffer) is
+   procedure Next_Read (CB : in out Circular_Buffer) is
    begin
-      Increment_Idx (C, Read);
+      Increment_Idx (CB, Read);
    end Next_Read;
 
-   procedure Next_Write (C : in out Circular_Buffer) is
+   procedure Next_Write (CB : in out Circular_Buffer) is
    begin
-      Increment_Idx (C, Write);
+      Increment_Idx (CB, Write);
    end Next_Write;
 
-   function Reader_Matches_Writer (C : Circular_Buffer) return Boolean is
+   function Reader_Matches_Writer (CB : Circular_Buffer) return Boolean is
    begin
-      return C.Read_Idx = C.Write_Idx;
+      return CB.Read_Idx = CB.Write_Idx;
    end Reader_Matches_Writer;
 
 end Circular_Buffers;

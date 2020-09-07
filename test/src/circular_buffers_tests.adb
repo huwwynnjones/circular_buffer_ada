@@ -17,7 +17,7 @@ package body Circular_Buffers_Tests is
       Register_Routine
         (T, Test_Reader_Matches_Writer'Access,
          "Test we can know when the reader catches up with the writer");
-      Register_Routine (T, Test_Read_Pre_Condition'Access, "Test pre-condition on Read");
+      Register_Routine (T, Test_Read_Pre_Condition'Access, "Test pre-condition on Next_Read");
    end Register_Tests;
 
    function Name (T : Circular_Buffers_Test) return Message_String is
@@ -31,7 +31,7 @@ package body Circular_Buffers_Tests is
       Buf        : CB_Natural.Circular_Buffer;
       Write_Item : constant Natural := 3;
    begin
-      CB_Natural.Write (C => Buf, Item => Write_Item);
+      CB_Natural.Write (CB => Buf, Item => Write_Item);
       Assert
         ((CB_Natural.Read (Buf) = Write_Item),
          "Item read did not match that written");
@@ -82,7 +82,7 @@ package body Circular_Buffers_Tests is
          CB_Char.Write (Buf, Input (C));
          CB_Char.Next_Write (Buf);
       end loop;
-      for I in 1 .. Input'Length loop
+      for I in Input'Range loop
          CB_Char.Next_Read (Buf);
       end loop;
       CB_Char.Next_Read (Buf);

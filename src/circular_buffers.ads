@@ -7,16 +7,16 @@ package Circular_Buffers is
 
    type Circular_Buffer is private;
 
-   function Read (C : Circular_Buffer) return T;
+   function Read (CB : Circular_Buffer) return T;
 
-   procedure Write (C : in out Circular_Buffer; Item : T);
+   procedure Write (CB : in out Circular_Buffer; Item : T);
 
-   procedure Next_Read (C : in out Circular_Buffer)
-     with Pre => not Reader_Matches_Writer (C);
+   procedure Next_Read (CB : in out Circular_Buffer)
+     with Pre => not Reader_Matches_Writer (CB);
 
-   procedure Next_Write (C : in out Circular_Buffer);
+   procedure Next_Write (CB : in out Circular_Buffer);
 
-   function Reader_Matches_Writer (C : Circular_Buffer) return Boolean;
+   function Reader_Matches_Writer (CB : Circular_Buffer) return Boolean;
 
 private
 
